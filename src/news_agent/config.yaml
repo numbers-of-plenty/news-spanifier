@@ -1,0 +1,10 @@
+agents:
+  agent_1:
+    topics:
+      - "Upcoming or recently released TV and streaming series worldwide"
+      - "Awaited or recently released books and novels globally"
+
+  agent_2:
+    topics:
+      - "Upcoming or recently released video games worldwide"
+      - "Major gaming events, announcements, or esports tournaments globally"
