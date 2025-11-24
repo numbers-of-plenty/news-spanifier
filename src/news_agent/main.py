@@ -19,12 +19,21 @@ parser.add_argument(
     default="config.yaml",
     help="Path to config YAML file (default: config.yaml)",
 )
+parser.add_argument(
+    "--runs",
+    type=int,
+    default=None,
+    help="How many times each agent should run (overrides the value in config file)",
+)
 args = parser.parse_args()
 config_path = os.path.abspath(args.config)
 
 with open(config_path, "r", encoding="utf-8") as f:
     config = yaml.safe_load(f)
 
+cli_runs = args.runs
+config_runs = config.get("runs", 2)
+runs = cli_runs if cli_runs is not None else config_runs
 
 async def fetch_agent_news(agent_name: str) -> str:
     topics = config["agents"][agent_name]["topics"]
@@ -60,10 +69,16 @@ async def fetch_agent_news(agent_name: str) -> str:
 
 
 async def main():
-    tasks = [fetch_agent_news(agent) for agent in config["agents"].keys()]
+    tasks = []
+    for _ in range(runs): # 2 synchronous runs per agent by default
+        for agent in config["agents"].keys():
+            tasks.append(fetch_agent_news(agent))
+
     all_results = await asyncio.gather(*tasks)
     final_output = "\n\n".join(all_results)
     print(final_output)
+    with open("news.txt", "w", encoding="utf-8") as f:
+        f.write(final_output)
 
 
 if __name__ == "__main__":

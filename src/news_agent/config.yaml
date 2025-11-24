@@ -8,3 +8,6 @@ agents:
     topics:
       - "Upcoming or recently released video games worldwide"
       - "Major gaming events, announcements, or esports tournaments globally"
+
+      
+runs: 2
